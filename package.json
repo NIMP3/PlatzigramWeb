@@ -1,0 +1,28 @@
+{
+  "name": "platzigramweb",
+  "version": "0.1.0",
+  "description": "Comparte tus fotos estudiando en Platzi con el resto de la comunidad",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NIMP3/PlatzigramWeb.git"
+  },
+  "keywords": [
+    "platzi",
+    "javascript",
+    "curso-definitivo",
+    "platzigram"
+  ],
+  "author": "Edwin Yovany",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NIMP3/PlatzigramWeb/issues"
+  },
+  "homepage": "https://github.com/NIMP3/PlatzigramWeb#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
