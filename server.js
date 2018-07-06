@@ -3,6 +3,9 @@ var app = express();
 
 app.set('view engine','pug');
 
+//servir el directorio public de manera estatica
+app.use(express.static('public'));
+
 app.get('/', function(req, res){
 	res.render('index');
 })
