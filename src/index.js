@@ -1,5 +1,16 @@
-var numeros = [400, 100, -1, 2];
-var numerosMas1 = numeros.map(numero => numero + 1)
+//Manejo de rutas para una single page application con Page.js
+var page = require('page');
 
-console.log(numeros);
-console.log(numerosMas1);
+var main = document.getElementById('main-container');
+
+//Home
+page('/', function(ctx, next) {
+    main.innerHTML = 'Home <a href="/signup">Signup</a>';
+})
+
+//SignUp
+page('/signup', function(ctx, next) {
+    main.innerHTML = 'Signup <a href="/">Home</a>';
+})
+
+page();
