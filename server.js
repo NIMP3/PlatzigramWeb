@@ -8,17 +8,17 @@ app.use(express.static('public'));
 
 //Home
 app.get('/', function(req, res){
-	res.render('index');
+	res.render('index',{title:'Platzigram'});
 })
 
 //Signup
 app.get('/signup', function(req, res) {
-	res.render('index');
+	res.render('index', {title:'Platzigram - Signup'});
 })
 
 //Signin
 app.get('/signin', function(req, res) {
-	res.render('index');
+	res.render('index', {title:'Platzigram - Signin'});
 })
 
 //Servidor escuchando en el puerto 3000

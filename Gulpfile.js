@@ -31,6 +31,7 @@ function compile(watch) {
 		bundle
 			.transform(babel)
 			.bundle()
+			.on('error', function (err){ console.log(err); this.emit('end')}) //callback - Detecta errores y lanza la función
 			.pipe(source('index.js')) //Pasa de browserify a gulp para seguir procesandolo
 			.pipe(rename('app.js'))
 			.pipe(gulp.dest('public'))

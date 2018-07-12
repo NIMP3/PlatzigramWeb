@@ -2671,6 +2671,172 @@ process.chdir = function (dir) {
 process.umask = function() { return 0; };
 
 },{}],13:[function(require,module,exports){
+// Utilities
+const lowerCase = require('./lower-case')
+const specials = require('./specials')
+
+const regex = /(?:(?:(\s?(?:^|[.\(\)!?;:"-])\s*)(\w))|(\w))(\w*[’']*\w*)/g
+
+const convertToRegExp = specials => specials.map(s => [new RegExp(`\\b${s}\\b`, 'gi'), s])
+
+function parseMatch(match) {
+  const firstCharacter = match[0]
+
+  // test first character
+  if (/\s/.test(firstCharacter)) {
+    // if whitespace - trim and return
+    return match.substr(1)
+  }
+  if (/[\(\)]/.test(firstCharacter)) {
+    // if parens - this shouldn't be replaced
+    return null
+  }
+
+  return match
+}
+
+module.exports = (str, options = {}) => {
+  str = str.toLowerCase().replace(regex, (m, lead = '', forced, lower, rest) => {
+    const parsedMatch = parseMatch(m)
+    if (!parsedMatch) {
+      return m
+    }
+    if (!forced) {
+      const fullLower = lower + rest
+
+      if (lowerCase.has(fullLower)) {
+        return parsedMatch
+      }
+    }
+
+    return lead + (lower || forced).toUpperCase() + rest
+  })
+
+  const customSpecials = options.special || []
+  const replace = [...specials, ...customSpecials]
+  const replaceRegExp = convertToRegExp(replace)
+
+  replaceRegExp.forEach(([pattern, s]) => {
+    str = str.replace(pattern, s)
+  })
+
+  return str
+}
+
+},{"./lower-case":14,"./specials":15}],14:[function(require,module,exports){
+const conjunctions = [
+  'for',
+  'and',
+  'nor',
+  'but',
+  'or',
+  'yet',
+  'so'
+]
+
+const articles = [
+  'a',
+  'an',
+  'the'
+]
+
+const prepositions = [
+  'aboard',
+  'about',
+  'above',
+  'across',
+  'after',
+  'against',
+  'along',
+  'amid',
+  'among',
+  'anti',
+  'around',
+  'as',
+  'at',
+  'before',
+  'behind',
+  'below',
+  'beneath',
+  'beside',
+  'besides',
+  'between',
+  'beyond',
+  'but',
+  'by',
+  'concerning',
+  'considering',
+  'despite',
+  'down',
+  'during',
+  'except',
+  'excepting',
+  'excluding',
+  'following',
+  'for',
+  'from',
+  'in',
+  'inside',
+  'into',
+  'like',
+  'minus',
+  'near',
+  'of',
+  'off',
+  'on',
+  'onto',
+  'opposite',
+  'over',
+  'past',
+  'per',
+  'plus',
+  'regarding',
+  'round',
+  'save',
+  'since',
+  'than',
+  'through',
+  'to',
+  'toward',
+  'towards',
+  'under',
+  'underneath',
+  'unlike',
+  'until',
+  'up',
+  'upon',
+  'versus',
+  'via',
+  'with',
+  'within',
+  'without'
+]
+
+module.exports = new Set([
+  ...conjunctions,
+  ...articles,
+  ...prepositions
+])
+
+},{}],15:[function(require,module,exports){
+const intended = [
+  'ZEIT',
+  'ZEIT Inc.',
+  'CLI',
+  'API',
+  'Next.js',
+  'Node.js',
+  'HTTP',
+  'HTTPS',
+  'JSX',
+  'DNS',
+  'URL',
+  'now.sh'
+]
+
+module.exports = intended
+
+},{}],16:[function(require,module,exports){
 var bel = require('bel') // turns template tag into DOM elements
 var morphdom = require('morphdom') // efficiently diffs + morphs two DOM elements
 var defaultEvents = require('./update-events.js') // default events to be copied when dom elements update
@@ -2714,7 +2880,7 @@ module.exports.update = function (fromNode, toNode, opts) {
   }
 }
 
-},{"./update-events.js":14,"bel":1,"morphdom":8}],14:[function(require,module,exports){
+},{"./update-events.js":17,"bel":1,"morphdom":8}],17:[function(require,module,exports){
 module.exports = [
   // attribute events (can be set with attributes)
   'onclick',
@@ -2752,63 +2918,140 @@ module.exports = [
   'onfocusout'
 ]
 
-},{}],15:[function(require,module,exports){
-//Manejo de rutas para una single page application con Page.js
+},{}],18:[function(require,module,exports){
 var page = require('page');
-var yo = require('yo-yo');
-var empty = require('empty-element');
-
-var main = document.getElementById('main-container');
 
 //Home
 page('/', function (ctx, next) {
-  main.innerHTML = '<a href="/signup">Sighup</a>';
+    var main = document.getElementById('main-container');
+    main.innerHTML = '<a href="/signup">Sighup</a>';
 });
 
-//SignUp
-page('/signup', function (ctx, next) {
-  var el = yo`<div class="container">
-    <div class="row">
-      <div class="col s10 push-s1">
+},{"page":11}],19:[function(require,module,exports){
+//Manejo de rutas para una single page application con Page.js
+var page = require('page');
+//Como los modulos no exportan nada, no se requiere una variable
+require('./homepage');
+require('./signup');
+require('./signin');
+
+//Exporta un solo objeto con la información de los otros modulos
+page();
+
+},{"./homepage":18,"./signin":21,"./signup":23,"page":11}],20:[function(require,module,exports){
+var yo = require('yo-yo');
+
+module.exports = function landing(box) {
+  return yo`
+    <div class="container">
         <div class="row">
-          <div class="col m5 hide-on-small-only">
-            <img class="iphone" src="iphone.png" />
-          </div>
-          <div class="col s12 m7">
+          <div class="col s10 push-s1">
             <div class="row">
-              <div class="signup-box">
-                <h1 class="platzigram">Platzigram</h1>
-                <form class="signup-form">
-                  <h2>Regístrate para ver fotos de tus amigos estudiando en Platzi</h2>
-                  <div class="section">
-                    <a class="btn btn-fb hide-on-small-only">Iniciar sesión con Facebook</a>
-                    <a class="btn btn-fb hide-on-med-and-up">Iniciar sesión</a>
-                  </div>
-                  <div class="divider"></div>
-                  <div class="section">
-                    <input type="email" name="email" placeholder="Correo electrónico"/>
-                    <input type="text" name="name" placeholder="Nombre completo"/>
-                    <input type="text" name="username" placeholder="Nombre de usuario"/>
-                    <input type="password" name="password" placeholder="Contraseña"/>
-                    <button class="btn waves-effect waves-light btn-signup" type="submit">Regístrate</button>
-                  </div>
-                </form>
+              <div class="col m5 hide-on-small-only">
+                <img class="iphone" src="iphone.png" />
               </div>
-            </div>
-            <div class="row">
-              <div class="login-box">
-                ¿Tienes una cuenta? <a href="/signin">Entrar</a>
-              </div>
+              ${box}
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>`;
+    </div>`;
+};
 
-  empty(main).appendChild(el);
+},{"yo-yo":16}],21:[function(require,module,exports){
+var page = require('page');
+var empty = require('empty-element');
+var template = require('./template');
+var title = require('title');
+
+//SignIn
+page('/signin', function (ctx, next) {
+    title('Platzigram - Signin');
+    var main = document.getElementById('main-container');
+    empty(main).appendChild(template);
 });
 
-page();
+},{"./template":22,"empty-element":3,"page":11,"title":13}],22:[function(require,module,exports){
+var yo = require('yo-yo');
+var landing = require('../landing');
 
-},{"empty-element":3,"page":11,"yo-yo":13}]},{},[15]);
+//Formulario de SignIn
+var signinForm = yo`
+<div class="col s12 m7">
+  <div class="row">
+    <div class="signup-box">
+      <h1 class="platzigram">Platzigram</h1>
+      <form class="signup-form">
+        <div class="section">
+          <a class="btn btn-fb hide-on-small-only">Iniciar sesión con Facebook</a>
+          <a class="btn btn-fb hide-on-med-and-up">Iniciar sesión</a>
+        </div>
+        <div class="divider"></div>
+        <div class="section">
+          <input type="text" name="username" placeholder="Nombre de usuario"/>
+          <input type="password" name="password" placeholder="Contraseña"/>
+          <button class="btn waves-effect waves-light btn-signup" type="submit">Iniciar Sesión</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="row">
+    <div class="login-box">
+      ¿No tienes una cuenta? <a href="/signup">Regístrate</a>
+    </div>
+  </div>
+</div>`;
+
+//Exportamos el Landing + signIn
+module.exports = landing(signinForm);
+
+},{"../landing":20,"yo-yo":16}],23:[function(require,module,exports){
+var page = require('page');
+var empty = require('empty-element');
+var template = require('./template');
+var title = require('title'); //paquete para cambiar el titulo de la pagina
+
+//SignUp
+page('/signup', function (ctx, next) {
+    title('Platzigram - Signup');
+    var main = document.getElementById('main-container');
+    empty(main).appendChild(template);
+});
+
+},{"./template":24,"empty-element":3,"page":11,"title":13}],24:[function(require,module,exports){
+var yo = require('yo-yo');
+var landing = require('../landing');
+
+//Formulario de SignUp
+var signupForm = yo`
+<div class="col s12 m7">
+  <div class="row">
+    <div class="signup-box">
+      <h1 class="platzigram">Platzigram</h1>
+      <form class="signup-form">
+        <h2>Regístrate para ver fotos de tus amigos estudiando en Platzi</h2>
+        <div class="section">
+          <a class="btn btn-fb hide-on-small-only">Iniciar sesión con Facebook</a>
+          <a class="btn btn-fb hide-on-med-and-up">Iniciar sesión</a>
+        </div>
+        <div class="divider"></div>
+        <div class="section">
+          <input type="email" name="email" placeholder="Correo electrónico"/>
+          <input type="text" name="name" placeholder="Nombre completo"/>
+          <input type="text" name="username" placeholder="Nombre de usuario"/>
+          <input type="password" name="password" placeholder="Contraseña"/>
+          <button class="btn waves-effect waves-light btn-signup" type="submit">Regístrate</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="row">
+    <div class="login-box">
+      ¿Tienes una cuenta? <a href="/signin">Entrar</a>
+    </div>
+  </div>
+</div>`;
+
+//Exportamos el Landing + signUp
+module.exports = landing(signupForm);
+
+},{"../landing":20,"yo-yo":16}]},{},[19]);
