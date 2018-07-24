@@ -10,7 +10,7 @@ var signinForm = yo`
       <form class="signup-form">
         <div class="section">
           <a class="btn btn-fb hide-on-small-only">Iniciar sesión con Facebook</a>
-          <a class="btn btn-fb hide-on-med-and-up">Iniciar sesión</a>
+          <a class="btn btn-fb hide-on-med-and-up"><i class="fab fa-facebook"></i>Iniciar sesión</a>
         </div>
         <div class="divider"></div>
         <div class="section">

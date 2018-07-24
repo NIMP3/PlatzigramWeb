@@ -2920,14 +2920,34 @@ module.exports = [
 
 },{}],18:[function(require,module,exports){
 var page = require('page');
+var empty = require('empty-element');
+var template = require('./template');
+var title = require('title');
 
-//Home
+//HomePage
 page('/', function (ctx, next) {
+    title('Platzigram');
     var main = document.getElementById('main-container');
-    main.innerHTML = '<a href="/signup">Sighup</a>';
+    empty(main).appendChild(template);
 });
 
-},{"page":11}],19:[function(require,module,exports){
+},{"./template":19,"empty-element":3,"page":11,"title":13}],19:[function(require,module,exports){
+var yo = require('yo-yo');
+var layout = require("../layout");
+
+//Formulario de SignIn
+var template = yo`
+    <div class="container timeline">
+        <div class="row">
+            <div class="col s12 m10 offset-m1 l6 offset-l3">
+                content
+            </div>
+        </div>
+    </div>`;
+
+module.exports = layout(template);
+
+},{"../layout":22,"yo-yo":16}],20:[function(require,module,exports){
 //Manejo de rutas para una single page application con Page.js
 var page = require('page');
 //Como los modulos no exportan nada, no se requiere una variable
@@ -2938,12 +2958,12 @@ require('./signin');
 //Exporta un solo objeto con la información de los otros modulos
 page();
 
-},{"./homepage":18,"./signin":21,"./signup":23,"page":11}],20:[function(require,module,exports){
+},{"./homepage":18,"./signin":23,"./signup":25,"page":11}],21:[function(require,module,exports){
 var yo = require('yo-yo');
 
 module.exports = function landing(box) {
   return yo`
-    <div class="container">
+    <div class="container landing">
         <div class="row">
           <div class="col s10 push-s1">
             <div class="row">
@@ -2957,7 +2977,39 @@ module.exports = function landing(box) {
     </div>`;
 };
 
-},{"yo-yo":16}],21:[function(require,module,exports){
+},{"yo-yo":16}],22:[function(require,module,exports){
+var yo = require('yo-yo');
+
+module.exports = function layout(content) {
+    return yo`
+    <div>
+        <nav class="header">
+            <div class="nav-wrapper">
+                <div class="container">
+                    <div class="row">
+                        <div class="col s12 m6 offset-m1">
+                            <a href="/" class="brand-logo platzigram">Platzigram</a>
+                        </div>
+                        <div class="col s2 m6 push-s10 push-m10">
+                            <a href="#" class="btn btn-large btn-flat dropdown-button" data-activates="drop-user">
+                                <i class="fa fa-user" aria-hidden="true"></i>
+                            </a>
+                            <ul id="drop-user" class="dropdown-content">
+                                <li><a href="#">Salir</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <div class="content">
+            ${content}
+        </div>
+    </div>
+    `;
+};
+
+},{"yo-yo":16}],23:[function(require,module,exports){
 var page = require('page');
 var empty = require('empty-element');
 var template = require('./template');
@@ -2970,7 +3022,7 @@ page('/signin', function (ctx, next) {
     empty(main).appendChild(template);
 });
 
-},{"./template":22,"empty-element":3,"page":11,"title":13}],22:[function(require,module,exports){
+},{"./template":24,"empty-element":3,"page":11,"title":13}],24:[function(require,module,exports){
 var yo = require('yo-yo');
 var landing = require('../landing');
 
@@ -2983,7 +3035,7 @@ var signinForm = yo`
       <form class="signup-form">
         <div class="section">
           <a class="btn btn-fb hide-on-small-only">Iniciar sesión con Facebook</a>
-          <a class="btn btn-fb hide-on-med-and-up">Iniciar sesión</a>
+          <a class="btn btn-fb hide-on-med-and-up"><i class="fab fa-facebook"></i>Iniciar sesión</a>
         </div>
         <div class="divider"></div>
         <div class="section">
@@ -3004,7 +3056,7 @@ var signinForm = yo`
 //Exportamos el Landing + signIn
 module.exports = landing(signinForm);
 
-},{"../landing":20,"yo-yo":16}],23:[function(require,module,exports){
+},{"../landing":21,"yo-yo":16}],25:[function(require,module,exports){
 var page = require('page');
 var empty = require('empty-element');
 var template = require('./template');
@@ -3017,7 +3069,7 @@ page('/signup', function (ctx, next) {
     empty(main).appendChild(template);
 });
 
-},{"./template":24,"empty-element":3,"page":11,"title":13}],24:[function(require,module,exports){
+},{"./template":26,"empty-element":3,"page":11,"title":13}],26:[function(require,module,exports){
 var yo = require('yo-yo');
 var landing = require('../landing');
 
@@ -3031,7 +3083,7 @@ var signupForm = yo`
         <h2>Regístrate para ver fotos de tus amigos estudiando en Platzi</h2>
         <div class="section">
           <a class="btn btn-fb hide-on-small-only">Iniciar sesión con Facebook</a>
-          <a class="btn btn-fb hide-on-med-and-up">Iniciar sesión</a>
+          <a class="btn btn-fb hide-on-med-and-up"><i class="fab fa-facebook"></i>Iniciar sesión</a>
         </div>
         <div class="divider"></div>
         <div class="section">
@@ -3054,4 +3106,4 @@ var signupForm = yo`
 //Exportamos el Landing + signUp
 module.exports = landing(signupForm);
 
-},{"../landing":20,"yo-yo":16}]},{},[19]);
+},{"../landing":21,"yo-yo":16}]},{},[20]);
