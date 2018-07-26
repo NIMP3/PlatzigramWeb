@@ -14,8 +14,9 @@ page('/', function(ctx, next) {
                 avatar:'https://avatars0.githubusercontent.com/u/8845065?s=400&v=4',
             },
             url:'office.jpg',
-            likes:1024,
-            liked:true
+            likes:24,
+            liked:false,
+            createdAt: new Date()
         },
         {
             user:{
@@ -23,8 +24,9 @@ page('/', function(ctx, next) {
                 avatar:'https://avatars0.githubusercontent.com/u/8845065?s=400&v=4',
             },
             url:'office.jpg',
-            likes:1024,
-            liked:true
+            likes:102,
+            liked:true,
+            createdAt: new Date().setDate(new Date().getDate() - 10)
         },
         {
             user:{
@@ -32,8 +34,9 @@ page('/', function(ctx, next) {
                 avatar:'https://avatars0.githubusercontent.com/u/8845065?s=400&v=4',
             },
             url:'office.jpg',
-            likes:1024,
-            liked:true
+            likes:14,
+            liked:false,
+            createdAt: new Date().setDate(new Date().getDate() - 4)
         },
     ];
 
