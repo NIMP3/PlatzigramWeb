@@ -5552,7 +5552,7 @@ page('/', function (ctx, next) {
             avatar: 'https://avatars0.githubusercontent.com/u/8845065?s=400&v=4'
         },
         url: 'office.jpg',
-        likes: 24,
+        likes: 0,
         liked: false,
         createdAt: new Date()
     }, {
@@ -5570,7 +5570,7 @@ page('/', function (ctx, next) {
             avatar: 'https://avatars0.githubusercontent.com/u/8845065?s=400&v=4'
         },
         url: 'office.jpg',
-        likes: 14,
+        likes: 1,
         liked: false,
         createdAt: new Date().setDate(new Date().getDate() - 4)
     }];
@@ -5663,12 +5663,7 @@ module.exports = function layout(content) {
 
 },{"yo-yo":33}],40:[function(require,module,exports){
 var yo = require("yo-yo");
-window.IntlRelativeFormat = require('intl-relativeformat');
-
-require('intl-relativeformat/dist/locale-data/en.js');
-require('intl-relativeformat/dist/locale-data/es.js');
-
-var rf = new IntlRelativeFormat('es');
+var translate = require('../translate');
 
 module.exports = function (pic) {
 
@@ -5685,11 +5680,11 @@ module.exports = function (pic) {
               <img src="${picture.user.avatar}" class="avatar" />
               <span class="username">${picture.user.username}</span>
             </a>
-            <small class="right time">${rf.format(picture.createdAt)}</small>
+            <small class="right time">${translate.date.format(picture.createdAt)}</small>
             <p>
               <a class="left" href="#" onclick="${like.bind(null, true)}"><i class="far fa-heart" aria-hidden="true"></i></a> 
               <a class="left" href="#" onclick="${like.bind(null, false)}"><i class="fas fa-heart" aria-hidden="true"></i></a> 
-              <span class="left likes">${picture.likes}</span>
+              <span class="left likes">${translate.message('likes', { likes: picture.likes })}</span>
             </p>
           </div>
         </div>
@@ -5709,7 +5704,7 @@ module.exports = function (pic) {
   return el;
 };
 
-},{"intl-relativeformat":19,"intl-relativeformat/dist/locale-data/en.js":17,"intl-relativeformat/dist/locale-data/es.js":18,"yo-yo":33}],41:[function(require,module,exports){
+},{"../translate":47,"yo-yo":33}],41:[function(require,module,exports){
 var page = require('page');
 var empty = require('empty-element');
 var template = require('./template');
@@ -5806,4 +5801,39 @@ var signupForm = yo`
 //Exportamos el Landing + signUp
 module.exports = landing(signupForm);
 
-},{"../landing":38,"yo-yo":33}]},{},[37]);
+},{"../landing":38,"yo-yo":33}],45:[function(require,module,exports){
+module.exports = {
+        likes: '{ likes,plural,' + '=0 {no likes}' + '=1 {# like}' + 'other {# likes}}'
+};
+
+},{}],46:[function(require,module,exports){
+module.exports = {
+    likes: '{ likes,number } me gusta'
+};
+
+},{}],47:[function(require,module,exports){
+var IntlRelativeFormat = window.IntlRelativeFormat = require('intl-relativeformat');
+var IntlMessageFormat = require('intl-messageformat');
+//Requerimos los idiomas respectivos
+var es = require('./es');
+var en = require('./en-US');
+
+require('intl-relativeformat/dist/locale-data/en.js');
+require('intl-relativeformat/dist/locale-data/es.js');
+
+var MESSAGES = {};
+MESSAGES.es = es;
+MESSAGES['en-US'] = en;
+
+var locale = 'es';
+
+module.exports = {
+    message: function (text, options) {
+        options = options || {};
+        var msg = new IntlMessageFormat(MESSAGES[locale][text], locale, null);
+        return msg.format(options);
+    },
+    date: new IntlRelativeFormat(locale)
+};
+
+},{"./en-US":45,"./es":46,"intl-messageformat":10,"intl-relativeformat":19,"intl-relativeformat/dist/locale-data/en.js":17,"intl-relativeformat/dist/locale-data/es.js":18}]},{},[37]);

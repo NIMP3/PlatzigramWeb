@@ -14,7 +14,7 @@ page('/', function(ctx, next) {
                 avatar:'https://avatars0.githubusercontent.com/u/8845065?s=400&v=4',
             },
             url:'office.jpg',
-            likes:24,
+            likes:0,
             liked:false,
             createdAt: new Date()
         },
@@ -34,7 +34,7 @@ page('/', function(ctx, next) {
                 avatar:'https://avatars0.githubusercontent.com/u/8845065?s=400&v=4',
             },
             url:'office.jpg',
-            likes:14,
+            likes:1,
             liked:false,
             createdAt: new Date().setDate(new Date().getDate() - 4)
         },
