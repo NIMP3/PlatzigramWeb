@@ -4,6 +4,7 @@ var page = require('page');
 require('./homepage');
 require('./signup');
 require('./signin');
+require('./footer');
 
 //Exporta un solo objeto con la información de los otros modulos
 page();
