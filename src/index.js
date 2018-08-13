@@ -1,3 +1,4 @@
+require('babel-polyfill');
 //Manejo de rutas para una single page application con Page.js
 var page = require('page');
 //Como los modulos no exportan nada, no se requiere una variable

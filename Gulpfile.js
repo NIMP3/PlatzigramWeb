@@ -24,25 +24,26 @@ gulp.task('assets',function () {
 
 //Función para
 function compile(watch) {
-	var bundle = watchify(browserify('src/index.js'));
+	var bundle = browserify('src/index.js');
 	
+	if(watch) {
+		//Detecta el evento update sobre el archivo que se esta escuchando (index.js)
+		bundle = watchify(bundle);
+		bundle.on('update', function() {
+			console.log('==> Bundling...');
+			rebundle();
+		})
+	}
+
 	//Función para procesar el javascript del cliente
 	function rebundle() {
 		bundle
-			.transform(babel)
+			.transform(babel, {presets: ['es2015'], plugins : ['syntax-async-functions','transform-regenerator']})
 			.bundle()
 			.on('error', function (err){ console.log(err); this.emit('end')}) //callback - Detecta errores y lanza la función
 			.pipe(source('index.js')) //Pasa de browserify a gulp para seguir procesandolo
 			.pipe(rename('app.js'))
 			.pipe(gulp.dest('public'))
-	}
-	
-	if(watch) {
-		//Detecta el evento update sobre el archivo que se esta escuchando (index.js)
-		bundle.on('update', function() {
-			console.log('==> Bundling...');
-			rebundle();
-		})
 	}
 
 	rebundle();

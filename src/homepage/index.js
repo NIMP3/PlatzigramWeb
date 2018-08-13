@@ -7,7 +7,7 @@ var header = require('../header');
 var axios = require('axios');
 
 //Mildwares [Header, Carga de imágenes y HomePage]
-page('/', header, loadPictures, function(ctx, next) {
+page('/', header, asyncLoad, function(ctx, next) {
     title('Platzigram');
     var main = document.getElementById('main-container');
     empty(main).appendChild(template(ctx.pictures));
@@ -44,4 +44,32 @@ function loadPicturesAxios(ctx, next) {
         .catch(function (err) {
             return console.log(err);            
         })
+}
+
+/*-----------------------------------------------------------------------------------------------------
+Ejemplo con Fetch - Promises*/
+function loadPicturesFetch(ctx, next) {
+    fetch('/api/pictures')
+        .then(function (res) {
+            return res.json();
+        })
+        .then(function (pictures) {
+            ctx.pictures = pictures;
+            next();
+        })
+        .catch(function (err) {
+            console.log(err);
+        });
+}
+
+/*-----------------------------------------------------------------------------------------------------
+Ejemplo con AsyncLoad*/
+async function asyncLoad(ctx, next) {
+    try {
+        //Detiene la ejecución de el proceso hasta que se cumpla la promesa
+        ctx.pictures = await fetch('/api/pictures').then(res => res.json());
+        next();
+    } catch (err) {
+        return console.log(err);
+    }
 }
